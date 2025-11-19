@@ -5,31 +5,74 @@ const ProductsListing = (props) => {
   let { products } = props;
 
   const [searchValue, setSearchValue] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [filterBy, setFilter] = useState("ALL");
-  const [sortBy, setSorting] = useState("None");
 
+  const [filterBy, setFilter] = useState("all");
+  const [sortBy, setSorting] = useState("none");
+
+  function getFilteredProducts(list) {
+    if (filterBy !== "all") {
+      list = list.filter((item) => {
+        return item.category === filterBy;
+      });
+    }
+    return list;
+  }
+
+  function getFinalData() {
+    let list = products;
+
+    list = getFilteredProducts(list);
+    list = getSortedList(list);
+    list = getSearchItems(list);
+
+    return list;
+  }
+
+  const filteredData = getFinalData();
+
+  function getSortedList(list) {
+    switch (sortBy) {
+      case "price":
+        list.sort((item1, item2) => {
+          return item1.price - item2.price;
+        });
+        break;
+      case "rating":
+        list.sort((item1, item2) => {
+          return item2.rating.rate - item1.rating.rate;
+        });
+        break;
+      case "title":
+        list.sort((item1, item2) => {
+          return item1.title.localeCompare(item2.title);
+        });
+        break;
+      case "none":
+        return list;
+
+        break;
+    }
+    return list;
+  }
+
+  function getSearchItems(list) {
+    if (searchValue !== "")
+      list = list.filter((item) =>
+        item.title.toLowerCase().includes(searchValue.toLocaleLowerCase())
+      );
+
+    return list;
+  }
   const handleSorting = (e) => {
     setSorting(e.target.value);
   };
 
   const handleFilter = (e) => {
-    let value = e.target.value;
-
-    let list = products;
-    if (value !== "all") {
-      list = products.filter((items) => {
-        return items.category === value;
-      });
-    }
-
-    setFilter(value);
-    setFilteredProducts(list);
+    setFilter(e.target.value);
   };
 
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
-    console.log(searchValue);
   };
 
   return (
@@ -46,6 +89,7 @@ const ProductsListing = (props) => {
                 id="filterBy"
                 className="w-50 outline-none"
                 onChange={handleFilter}
+                value={filterBy}
               >
                 <option value="all">ALL</option>
                 <option value="men's clothing">Men's clothing</option>
@@ -63,11 +107,12 @@ const ProductsListing = (props) => {
                 id="sortBy"
                 className="w-50 outline-none"
                 onChange={handleSorting}
+                value={sortBy}
               >
                 <option value="none">None</option>
-                <option value="priceHL">Price High to Low</option>
-                <option value="priceLH">Price Low to High</option>
-                <option value="name">Name</option>
+                <option value="price">Price</option>
+
+                <option value="title">Name</option>
                 <option value="rating">Rating</option>
               </select>
             </div>
@@ -87,8 +132,7 @@ const ProductsListing = (props) => {
           All Products
         </h2>
         <div className="mt-6 flex flex-row flex-wrap justify-around items-center">
-          {console.log(filteredProducts)}
-          {filteredProducts.map((product, index) => {
+          {filteredData.map((product, index) => {
             return <ProductCard {...product} key={product.id} />;
           })}
         </div>
