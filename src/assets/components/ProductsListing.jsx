@@ -1,13 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
+import axios from "axios";
 
-const ProductsListing = (props) => {
-  let { products } = props;
+const ProductsListing = () => {
+  const [products, setFetchedProducts] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
-
   const [filterBy, setFilter] = useState("all");
   const [sortBy, setSorting] = useState("none");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("https://fakestoreapi.com/products");
+        setFetchedProducts(response.data);
+      } catch (e) {
+        setError(e.message);
+        setFetchedProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white min-h-screen flex flex-row justify-center items-center text-5xl font-bold">
+        <h1>Loading All Products...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>An error occurred: {error}</div>;
+  }
 
   function getFilteredProducts(list) {
     if (filterBy !== "all") {
@@ -49,8 +79,6 @@ const ProductsListing = (props) => {
         break;
       case "none":
         return list;
-
-        break;
     }
     return list;
   }
@@ -58,7 +86,7 @@ const ProductsListing = (props) => {
   function getSearchItems(list) {
     if (searchValue !== "")
       list = list.filter((item) =>
-        item.title.toLowerCase().includes(searchValue.toLocaleLowerCase())
+        item.title.toLowerCase().includes(searchValue.toLowerCase())
       );
 
     return list;
