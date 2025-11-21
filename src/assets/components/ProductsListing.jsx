@@ -27,14 +27,6 @@ const ProductsListing = () => {
     fetchProducts();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="bg-white min-h-screen flex flex-row justify-center items-center text-5xl font-bold">
-        <h1>Loading All Products...</h1>
-      </div>
-    );
-  }
-
   if (error) {
     return <div>An error occurred: {error}</div>;
   }
@@ -169,6 +161,9 @@ const ProductsListing = () => {
           All Products
         </h2>
         <div className="mt-6 flex flex-row flex-wrap justify-around items-center">
+          {isLoading && (
+            <h1 className="text-5xl font-bold">Loading All Products......</h1>
+          )}
           {filteredData.map((product, index) => {
             return <ProductCard {...product} key={product.id} />;
           })}

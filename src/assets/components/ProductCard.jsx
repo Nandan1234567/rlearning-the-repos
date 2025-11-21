@@ -4,7 +4,7 @@ const ProductCard = (props) => {
   let { title, image, price, rating } = props;
   return (
     <div>
-      <div className=" flex justify-between flex-col  shadow-lg hover:cursor-pointer p-3 rounded-md h-100 w-70 mt-5">
+      <div className=" flex justify-between flex-col  shadow-lg hover:cursor-pointer p-3 rounded-md h-100 w-70 mt-5 mr-3">
         <img
           src={image}
           alt="Front of men's Basic Tee in dark gray"
