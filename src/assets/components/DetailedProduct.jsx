@@ -1,41 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import products from "../data/productsData";
+import axios from "axios";
 
 const DetailedProduct = () => {
-  const idNo = 3;
+  const productId = 3;
+  const [similarProducts, setSimilarProducts] = useState([]);
+  const [product, setProduct] = useState({});
+  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const item = products[idNo];
-  const similarProducts = products
-    .filter(
-      (product) =>
-        (product.category === item.category) & (product.id !== item.id)
-    )
-    .slice(0, 3);
+  useEffect(() => {
+    const fetchedProducts = async () => {
+      try {
+        const response = await axios.get("https://fakestoreapi.com/products");
+        const singleProduct = response.data[productId];
+
+        setProduct(singleProduct);
+
+        setSimilarProducts(() => {
+          return response.data
+            .filter(
+              (item) =>
+                item.category === singleProduct.category &&
+                item.id !== singleProduct.id
+            )
+            .slice(0, 3);
+        });
+      } catch (e) {
+        setError(e.message);
+        setProduct({});
+        setSimilarProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchedProducts();
+  }, []);
+
+  if (error) {
+    return <div>An error occurred: {error}</div>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="bg-white w-screen min-h-screen flex flex-col items-center  p-5 mt-5">
+        <h1>Loading Product ......</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white w-screen min-h-screen flex flex-col items-center  p-5 mt-5">
       <div className="flex  justify-around items-center  flex-wrap shadow-lg max-w-5xl w-5/6">
         <div className="  flex justify-center w-90">
-          <img src={item.image} alt="image" className="h-80 w-90" />
+          <img src={product.image} alt="image" className="h-80 w-90" />
         </div>
         <div className="   flex flex-col justify-around p-5 w-90">
-          <h1 className="text-2xl text-black font-bold">{item.title}</h1>
+          <h1 className="text-2xl text-black font-bold">{product.title}</h1>
 
-          <p>{item.description}</p>
+          <p>{product.description}</p>
           <div className="flex justify-between items-center w-full  mt-5">
             <div className="flex flex-col mr-5">
               <span className="text-base font-semibold">Price</span>
-              <span className="text-lg font-bold mt-2">$ {item.price}</span>
+              <span className="text-lg font-bold mt-2">$ {product.price}</span>
             </div>
             <div className="flex flex-col ">
               <span className="text-base font-semibold">Overal Rating</span>
               <div className="mt-2">
                 <span className="text-lg font-bold  text-white bg-green-700 p-1 w-9 text-center  mr-2">
-                  {item.rating.rate}
+                  {/* {product.rating.rate} */}
                 </span>
                 <span className="text-xs font-normal ">
-                  Based on {item.rating.count} reviews
+                  Based on {product.rating.count} reviews
                 </span>
               </div>
             </div>
