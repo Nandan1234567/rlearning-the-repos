@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import axios from "axios";
+import { Oval } from "react-loader-spinner";
 
 const ProductsListing = () => {
   const [products, setFetchedProducts] = useState([]);
@@ -162,7 +163,15 @@ const ProductsListing = () => {
         </h2>
         <div className="mt-6 flex flex-row flex-wrap justify-around items-center">
           {isLoading && (
-            <h1 className="text-5xl font-bold">Loading All Products......</h1>
+            <Oval
+              visible={true}
+              height="80"
+              width="80"
+              color="#4fa94d"
+              ariaLabel="oval-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
           )}
           {filteredData.map((product, index) => {
             return <ProductCard {...product} key={product.id} />;

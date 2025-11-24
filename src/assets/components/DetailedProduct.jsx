@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import axios from "axios";
+import { Oval } from "react-loader-spinner";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-const DetailedProduct = () => {
-  const productId = 3;
+const DetailedProduct = (props) => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [similarProducts, setSimilarProducts] = useState([]);
   const [product, setProduct] = useState({});
   const [isLoading, setLoading] = useState(true);
@@ -13,9 +16,12 @@ const DetailedProduct = () => {
     const fetchedProducts = async () => {
       try {
         const response = await axios.get("https://fakestoreapi.com/products");
-        const singleProduct = response.data[productId];
-
+        const singleProduct = response.data.find((item) => item.id == id);
         setProduct(singleProduct);
+        if (!singleProduct) {
+          navigate("/not-found", { replace: true });
+          return;
+        }
 
         setSimilarProducts(() => {
           return response.data
@@ -36,7 +42,7 @@ const DetailedProduct = () => {
     };
 
     fetchedProducts();
-  }, []);
+  }, [id]);
 
   if (error) {
     return <div>An error occurred: {error}</div>;
@@ -44,8 +50,16 @@ const DetailedProduct = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-white w-screen min-h-screen flex flex-col items-center  p-5 mt-5">
-        <h1>Loading Product ......</h1>
+      <div className="bg-white w-screen min-h-screen flex flex-col items-center justify-center  p-5 mt-5">
+        <Oval
+          visible={true}
+          height="80"
+          width="80"
+          color="#4fa94d"
+          ariaLabel="oval-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
       </div>
     );
   }
@@ -69,7 +83,7 @@ const DetailedProduct = () => {
               <span className="text-base font-semibold">Overal Rating</span>
               <div className="mt-2">
                 <span className="text-lg font-bold  text-white bg-green-700 p-1 w-9 text-center  mr-2">
-                  {/* {product.rating.rate} */}
+                  {product.rating.rate}
                 </span>
                 <span className="text-xs font-normal ">
                   Based on {product.rating.count} reviews
