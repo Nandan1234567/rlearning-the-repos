@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const ProductCard = (props) => {
@@ -11,6 +10,7 @@ const ProductCard = (props) => {
             src={image}
             alt="Front of men's Basic Tee in dark gray"
             className="aspect-square w-full rounded-md "
+            loading="lazy"
           />
           <div className="mt-4 flex flex-col justify-between ">
             <h3 className="text-sm text-gray-800">{title}</h3>
