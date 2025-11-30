@@ -69,16 +69,10 @@ const DetailedProduct = (props) => {
     <CartContext.Consumer>
       {(value) => {
         const { addCartItems } = value;
+
         const onAddToCart = () => {
-          addCartItems({
-            id: 1,
-            title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-            price: 109.95,
-            quantity: 1,
-            category: "men's clothing",
-            image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png",
-            rating: { rate: 3.9, count: 120 },
-          });
+          addCartItems({ ...product, quantity: 1 });
+          alert("Items Added to cart");
         };
         return (
           <div className="bg-white w-screen min-h-screen flex flex-col items-center  p-5 mt-5">
@@ -113,23 +107,29 @@ const DetailedProduct = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-between items-center w-full  mt-5">
-                  <div className="flex  flex-col justify-center items-start">
+                <div className="flex justify-center items-center w-full  mt-5">
+                  {/* <div className="flex  flex-col justify-center items-start">
                     <span className="text-base font-semibold text-left mb-2">
                       Quantity
                     </span>
                     <div>
-                      <button className=" mr-2 bg-gray-200 text-black w-9 rounded-full font-bold hover:cursor-pointer">
+                      <button
+                        className=" mr-2 bg-gray-200 text-black w-9 rounded-full font-bold hover:cursor-pointer"
+                        onClick={onIncreaseQuantity}
+                      >
                         +
                       </button>
-                      <span>0</span>
-                      <button className=" ml-2 bg-gray-200 text-black w-9 rounded-full font-bold hover:cursor-pointer">
+                      <span>{quantity}</span>
+                      <button
+                        className=" ml-2 bg-gray-200 text-black w-9 rounded-full font-bold hover:cursor-pointer"
+                        onClick={onDecreaseQuantity}
+                      >
                         -
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                   <button
-                    className=" p-3 rounded-lg  font-bold bg-cyan-500 hover:bg-cyan-500/90 hover:cursor-pointer text-white"
+                    className=" p-3 rounded-lg  font-bold bg-cyan-500 hover:bg-cyan-500/90 hover:cursor-pointer text-white w-3/4"
                     onClick={onAddToCart}
                   >
                     Add to cart
